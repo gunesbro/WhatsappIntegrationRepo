@@ -9,6 +9,10 @@
     {
       "library": "jquery@3.5.1",
       "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "library": "microsoft-signalr@5.0.0-preview.5.20279.2",
+      "destination": "wwwroot/lib/microsoft-signalr/"
     }
   ]
 }

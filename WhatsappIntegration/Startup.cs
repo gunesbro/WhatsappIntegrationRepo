@@ -14,6 +14,7 @@ using WhatsappIntegration.DAL.Abstract;
 using WhatsappIntegration.DAL.Concrete.EFCore;
 using WhatsappIntegration.DAL.Context;
 using WhatsappIntegration.Entity.Concrete;
+using WhatsappIntegration.WebUI.Hubs;
 
 namespace WhatsappIntegration
 {
@@ -30,7 +31,7 @@ namespace WhatsappIntegration
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
+            services.AddSignalR();
             services.AddDbContext<IdentityContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("WhatsappIntegration.WebUI")));
 
@@ -95,6 +96,7 @@ namespace WhatsappIntegration
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Account}/{action=Login}/{id?}");
+                endpoints.MapHub<WhatsappHub>("/whatsapphub");
             });
         }
     }

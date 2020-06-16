@@ -3,7 +3,6 @@
     Layout = null;
 }
 <style>
-
 </style>
 <div class="bg-dark text-center" style="color:white;padding-top:4px; padding-bottom:4px;font-size:14px;">
     @if (ViewBag.Person != "undefined")
@@ -70,77 +69,119 @@
     }
 }
 <script>
-    /* Returns Old Messages to Chat */
-    var messageBody = document.querySelector('#chat-messages-container');
-    messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
-    var counter = 1;
-    var noResult = false;
-    $('#chat-messages-container').scroll(function () {
-        if ($(this).scrollTop() < 10) {
-            let chatId = @ViewBag.ChatId;
-            let take = @ViewBag.Take;
-            let skip = take * counter;
-            if (noResult != true) {
-                $('#loading').removeClass('invisible');
-                setTimeout(function () {
-                    $.ajax({
-                        url: '/Inbox/SkipTakeMessages?chatId=' + chatId + '&skip=' + skip + '&take=' + take,
-                        type: 'POST',
-                        dataType: 'json',
-                        success: function (data) {
-                            if (data.length == 0) {
-                                noResult = true;
-                            }
+    scrollAlwaysBottom();
+    
+    $(document).ready(function () {
+        var counter = 1;
+        var noResult = false;
+        let chatId = @ViewBag.ChatId;
 
-                            $.each(data, function (index, item) {
-                                if (index == 0) {
-                                    var htmlData = '<div class="bg-light" style="height:0.1px;margin-left:80px;margin-right:80px;"></div>';
-                                    $('#old-messages').prepend(htmlData);
+        var connection = new signalR.HubConnectionBuilder().withUrl("/whatsappHub").build();
+        $('#send-whatsapp').prop('disabled', true);
+
+        connection.on("ReceiveMessage", function (_chatId, message) {
+            console.log(message);
+            console.log(_chatId);
+            console.log(chatId);
+            if (_chatId == chatId) {
+                var htmlData = '<div class="text-right chat-massage-agent">';
+                htmlData += message + '<div class="text-right date-format">' + DateProcess(Date.now()) + '</div></div>';
+                $('#chat-messages-container').append(htmlData);
+                scrollAlwaysBottom();
+            }
+        });
+
+        connection.start().then(function () {
+            $('#send-whatsapp').prop('disabled', false);
+        }).catch(function (err) {
+            handleError(err.status);
+        });
+        //Send Agent Message to Client
+        $('#send-whatsapp').click(function (event) {
+            let message = $('#message-area').val();
+            connection.invoke("SendMessage", chatId, message).catch(function (err) {
+                handleError(err.status);
+            });
+            event.preventDefault();
+        })
+        /* Returns Old Messages to Chat */
+        $('#chat-messages-container').scroll(function () {
+                if ($(this).scrollTop() < 10) {
+                let take = @ViewBag.Take;
+                let skip = take * counter;
+                if (noResult != true) {
+                    $('#loading').removeClass('invisible');
+                    setTimeout(function () {
+                        $.ajax({
+                            url: '/Inbox/SkipTakeMessages?chatId=' + chatId + '&skip=' + skip + '&take=' + take,
+                            type: 'POST',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.length == 0) {
+                                    noResult = true;
                                 }
-                                if (item.messageDirection == true) {
-                                    var htmlData = '<div class="text-left chat-massage-client">';
-                                    htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '</div></div>';
-                                    $('#old-messages').prepend(htmlData);
+
+                                $.each(data, function (index, item) {
+                                    if (index == 0) {
+                                        var htmlData = '<div class="bg-light" style="height:0.1px;margin-left:80px;margin-right:80px;"></div>';
+                                        $('#old-messages').prepend(htmlData);
+                                    }
+                                    if (item.messageDirection == true) {
+                                        var htmlData = '<div class="text-left chat-massage-client">';
+                                        htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '</div></div>';
+                                        $('#old-messages').prepend(htmlData);
+                                    }
+                                    else {
+                                        var htmlData = '<div class="text-right chat-massage-agent">';
+                                        htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '</div></div>';
+                                        $('#old-messages').prepend(htmlData);
+                                    }
+                                    $('#chat-messages-container').scrollTop(150);
+                                });
+                            },
+                            error: function (response) {
+                                if (response.status == '401') {
+                                    window.location.href = '/Account/Login?ReturnUrl=%2FInbox%2FIndex';
                                 }
                                 else {
-                                    var htmlData = '<div class="text-right chat-massage-agent">';
-                                    htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '</div></div>';
-                                    $('#old-messages').prepend(htmlData);
+                                    alert("Error Occurred.(Cbx01)");
                                 }
-                                $('#chat-messages-container').scrollTop(150);
-                            });
-                        },
-                        error: function (response) {
-                            if (response.status == '401') {
-                                window.location.href = '/Account/Login?ReturnUrl=%2FInbox%2FIndex';
                             }
-                            else {
-                                alert("Error Occurred.(Cbx01)");
-                            }
-                        }
-                    });
-                    counter++;
-                    $('#loading').addClass('invisible');
+                        });
+                        counter++;
+                        $('#loading').addClass('invisible');
 
-                }, 150);
+                    }, 150);
 
+                }
             }
-        }
+         })
+
+        $('#message-area').keypress(function (e) {
+            var key = e.which;
+            if (key == 13)  // trigger send-whatsapp when enter pressed
+            {
+                $('button[name = send-whatsapp]').click();
+                $(this).val('');
+                return false;
+            }
+        });
+
     })
 
-    $('#message-area').keypress(function (e) {
-        var key = e.which;
-        if (key == 13)  // trigger send-whatsapp when enter pressed
-        {
-            $('button[name = send-whatsapp]').click();
-            $(this).val('');
-            return false;
-        }
-    });   
-    $('#send-whatsapp').click(function () {
-        
-    })
+    function scrollAlwaysBottom() {
+        var messageBody = document.querySelector('#chat-messages-container');
+        messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+    }
 
+    function handleError(status) {
+        if (status = '1006') {
+            window.location.href = '/Account/Login?ReturnUrl=%2FInbox%2FIndex';
+        }
+        else {
+            return console.error(err.toString());
+        }
+    }
     function DateProcess(messageDate) {
         const date = new Date(messageDate);
         const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
