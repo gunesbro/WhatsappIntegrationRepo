@@ -50,8 +50,8 @@
 </div>
 <div class="bg-dark">
     <div style="padding:11px;">
-        <textarea class="form-control textarea" rows="4" style="background-color:transparent;color:white;"></textarea>
-        <button class="form-control send-whatsapp">Send</button>
+        <textarea id="message-area" class="form-control textarea" rows="4" style="background-color:transparent;color:white;"></textarea>
+        <button id="send-whatsapp" name="send-whatsapp" class="form-control send-whatsapp">Send</button>
     </div>
 </div>
 @{
@@ -93,7 +93,10 @@
                             }
 
                             $.each(data, function (index, item) {
-
+                                if (index == 0) {
+                                    var htmlData = '<div class="bg-light" style="height:0.1px;margin-left:80px;margin-right:80px;"></div>';
+                                    $('#old-messages').prepend(htmlData);
+                                }
                                 if (item.messageDirection == true) {
                                     var htmlData = '<div class="text-left chat-massage-client">';
                                     htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '</div></div>';
@@ -124,6 +127,20 @@
             }
         }
     })
+
+    $('#message-area').keypress(function (e) {
+        var key = e.which;
+        if (key == 13)  // trigger send-whatsapp when enter pressed
+        {
+            $('button[name = send-whatsapp]').click();
+            $(this).val('');
+            return false;
+        }
+    });   
+    $('#send-whatsapp').click(function () {
+        
+    })
+
     function DateProcess(messageDate) {
         const date = new Date(messageDate);
         const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
