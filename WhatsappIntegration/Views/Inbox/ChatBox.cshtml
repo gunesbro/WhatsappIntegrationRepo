@@ -69,9 +69,8 @@
     }
 }
 <script>
-    scrollAlwaysBottom();
-    
     $(document).ready(function () {
+        scrollAlwaysBottom();
         var counter = 1;
         var noResult = false;
         let chatId = @ViewBag.ChatId;
@@ -80,9 +79,6 @@
         $('#send-whatsapp').prop('disabled', true);
 
         connection.on("ReceiveMessage", function (_chatId, message) {
-            console.log(message);
-            console.log(_chatId);
-            console.log(chatId);
             if (_chatId == chatId) {
                 var htmlData = '<div class="text-right chat-massage-agent">';
                 htmlData += message + '<div class="text-right date-format">' + DateProcess(Date.now()) + '</div></div>';
@@ -98,10 +94,14 @@
         });
         //Send Agent Message to Client
         $('#send-whatsapp').click(function (event) {
-            let message = $('#message-area').val();
-            connection.invoke("SendMessage", chatId, message).catch(function (err) {
-                handleError(err.status);
-            });
+            let message = $.trim($("#message-area").val());
+            if (message.length>0) {
+                connection.invoke("SendMessage", chatId, message).catch(function (err) {
+                    handleError(err.status);
+                });
+            } else {
+                alert("You can't send empty message!");
+            }
             event.preventDefault();
         })
         /* Returns Old Messages to Chat */
@@ -151,7 +151,7 @@
                         counter++;
                         $('#loading').addClass('invisible');
 
-                    }, 150);
+                    }, 100);
 
                 }
             }
@@ -159,7 +159,12 @@
 
         $('#message-area').keypress(function (e) {
             var key = e.which;
-            if (key == 13)  // trigger send-whatsapp when enter pressed
+            if (e.keyCode == 13 && e.shiftKey) //shift + enter for new line
+            {
+                $(this).val($(this).val() + '\n');
+                e.preventDefault();
+            }
+            else if (key == 13)  // trigger send-whatsapp when enter pressed
             {
                 $('button[name = send-whatsapp]').click();
                 $(this).val('');
