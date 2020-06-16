@@ -1,0 +1,35 @@
+﻿<div class="topbar-container">
+    @*<div class="container-fluid">
+        <div class="col-sm-9 padding-0">
+            <div class="input-group" style="padding:6px;">
+                <input id="search-text" type="text" onkeyup="search()" class="input form-control" placeholder="Type something..." style="background-color:transparent">
+                <div class="input-group-append">
+                    <input type="submit" class="input-group-text input" id="basic-addon2" value="Search!" style="background-color:#a32d2d;color:white;" />
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+
+        </div>
+    </div>
+    <div id="search-result-cantainer" class="bg-danger container-fluid">
+        <div class="text-center" style="padding:8px;">
+            <header><b>No Result!</b></header>
+        </div>
+    </div>*@
+</div>
+<script>
+    function search() {
+        let searchKey = $('#search-text').val();
+        let resultContainer = $('#search-result-cantainer');
+        if (searchKey != '') {
+            resultContainer.css("display", "block");
+            resultContainer.addClass("search-result-cantainer-open");
+
+        }
+        else {
+            resultContainer.removeClass("search-result-cantainer-open");
+            resultContainer.css("display", "none");
+        }
+    }
+</script>

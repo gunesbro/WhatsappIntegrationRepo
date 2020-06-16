@@ -1,0 +1,75 @@
+﻿.chat-massage-client {
+    background-color: #c25f18;
+    margin: 5px;
+    padding: 5px;
+    padding-left: 15px;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.chat-massage-agent {
+    background-color: burlywood;
+    margin: 5px;
+    margin-left: 10px;
+    padding: 5px;
+    padding-right: 15px;
+    border-radius: 5px;
+}
+
+.date-format {
+    font-size: 10px;
+}
+
+.chat-messages-container {
+    padding: 5px;
+    height: 450px;
+    overflow: auto;
+    color: white;
+}
+
+    .chat-messages-container::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 0px;
+        background-color: #343A40;
+    }
+
+    .chat-messages-container::-webkit-scrollbar {
+        width: 12px;
+        background-color: #F5F5F5;
+    }
+
+    .chat-messages-container::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #555;
+    }
+
+.display-none {
+    display: none;
+}
+.textarea {
+    background-color: transparent;
+    color: white;
+    font-size:14px;
+}
+.textarea:focus {
+    outline: none !important;
+    border: 1px solid white;
+    box-shadow: 0 0 6px #DEB887;
+}
+.send-whatsapp {
+    margin-top: 5px;
+    background-color: transparent;
+    color: white;
+    border-color: darkorange;
+}
+.send-whatsapp:hover{
+    border-color:lightgreen;
+}
+    .send-whatsapp:focus {
+        background-color: transparent;
+        color: white;
+        outline: none !important;
+        border: 1px solid white;
+        box-shadow: 0 0 4px lightgreen;
+    }

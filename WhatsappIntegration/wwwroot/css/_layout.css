@@ -1,0 +1,191 @@
+﻿.body {
+    /*background-color: #DBD0CE;*/
+    background-color: #433B39;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+}
+
+#content {
+    margin-left: 200px;
+    padding: 0;
+}
+/*Sidebar Start*/
+#sidebar {
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #151515;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    border-right: .6px solid #AA4E04;
+}
+
+#side-bar-container {
+}
+
+#sidebar-orange {
+    background-color: #AA4E04;
+    width: 100%;
+    height: 80px;
+}
+
+#gunesbros {
+    margin-top: -95px;
+}
+
+.svg-icon {
+    width: 2em;
+    height: 2em;
+    margin-left: 1em;
+}
+
+    .svg-icon path,
+    .svg-icon polygon,
+    .svg-icon rect {
+        fill: #e07137;
+    }
+
+    .svg-icon circle {
+        stroke: white;
+        stroke-width: 1;
+    }
+
+.links-container {
+    margin-top: 50px;
+}
+
+.links {
+    padding: 12px 5px 12px 5px;
+    margin-bottom: 3px;
+    background-color: #071317;
+}
+
+    .links:hover {
+    }
+
+.sidebar-links {
+    color: white;
+    font-weight: bold;
+    margin-left: .2em;
+}
+
+    .sidebar-links:hover {
+        color: darkorange;
+    }
+
+.a-link:hover {
+    text-decoration: none;
+}
+
+@media screen and (max-width: 1140px) {
+    #sidebar {
+        animation: sidebar-mini 1s forwards;
+    }
+
+    #content {
+        animation: content-bigger 1s forwards;
+        /*margin-left: 70px;*/
+    }
+
+    #gunesbros {
+        animation: gunesbros 1s forwards;
+    }
+
+    .sidebar-links {
+        margin: auto;
+        font-size: 12px;
+        animation: sidebar-links-anim 1s forwards;
+    }
+
+    .sidebar-links-container {
+        text-align: center;
+    }
+}
+
+@keyframes sidebar-links-anim {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes sidebar-mini {
+    0% {
+        width: 200px
+    }
+
+    100% {
+        width: 70px;
+    }
+}
+
+@keyframes content-bigger {
+    0% {
+        margin-left: 200px;
+    }
+
+    100% {
+        margin-left: 70px;
+    }
+}
+
+@keyframes gunesbros {
+    0% {
+        margin-top: -95px;
+    }
+
+    100% {
+        margin-top: -35px;
+    }
+}
+/*Sidebar End*/
+/*--------------------------------------------------------------------------------------------------------*/
+/*Topbar Start*/
+.topbar-container {
+    width: 100%;
+    height: 50px;
+    background-color: #151515;
+}
+
+.input:focus {
+    outline: none !important;
+    border: 1px solid white;
+    box-shadow: 0 0 10px #ee1717;
+}
+
+#search-result-cantainer {
+    z-index: 999;
+    position: relative;
+    display: none;
+}
+
+.search-result-cantainer-open {
+    height: 50px;
+    animation: open-searchbox .3s forwards;
+}
+
+@keyframes open-searchbox {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.padding-0 {
+    padding: 0;
+}
+/*Topbar End*/

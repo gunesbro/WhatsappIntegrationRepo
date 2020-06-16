@@ -1,0 +1,48 @@
+﻿@model LoginModel
+@{
+    Layout = null;
+    ViewBag.Title = "Login";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Whatsapp Integration</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/css/login.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="account-background">
+        <div class="center jumbotron login-form-background">
+            <div>
+                <label class="login-header">
+                    Whatsapp Integration App
+                </label>
+                <div class="" style="padding:0.5rem;">
+                    <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                        <input asp-for="Username" class="form-control input-background" placeholder="Username" />
+                        <span asp-validation-for="Username" class="validation-error"></span>
+
+                        <input asp-for="Password" class="form-control input-background" placeholder="Password" />
+                        <span asp-validation-for="Password" class="validation-error"></span>
+                        <div asp-validation-summary="All" class="text-danger" style="font-size:12px;"></div> @*ModelState.AddModelError message will be seen here*@
+                        <button class="form-control input-background" style="margin-top:5px;">Sign In</button>
+                        <a href="#" class="" style="float:right;font-size:12px;">Forgot Password</a>
+                    </form>
+
+                </div>
+                <div style="margin-top:2rem;">
+                    <p class="text-center"><a href="https://github.com/gunesbro" target="_blank">gunesbro's</a> project</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+@await Html.PartialAsync("~/Views/Shared/_ValidationScriptsPartial.cshtml")

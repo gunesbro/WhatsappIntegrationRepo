@@ -1,0 +1,134 @@
+﻿@model List<ChatMessages>
+@{
+    Layout = null;
+}
+<style>
+
+</style>
+<div class="bg-dark text-center" style="color:white;padding-top:4px; padding-bottom:4px;font-size:14px;">
+    @if (ViewBag.Person != "undefined")
+    {
+        <b>@ViewBag.Person</b>
+        <span>-</span>
+    }
+    @ViewBag.Phone
+</div>
+<div class="bg-dark chat-messages-container" id="chat-messages-container">
+    <div class="invisible text-center" id="loading">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: none; display: block; shape-rendering: auto;" width="22px" height="22px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+            <circle cx="50" cy="50" fill="none" stroke="#c8472c" stroke-width="10" r="35" stroke-dasharray="164.93361431346415 56.97787143782138" transform="rotate(22.4333 50 50)">
+                <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="0.9345794392523364s" values="0 50 50;360 50 50" keyTimes="0;1" />
+            </circle>
+        </svg>
+    </div>
+
+    @foreach (var item in Model.OrderBy(o => o.ChatMessageId))
+    {
+        <div id="old-messages">
+
+        </div>
+        if (item.MessageDirection == Enums.ChatMessageFromClient)
+        {
+            <div class="text-left chat-massage-client">
+                @item.Message
+                <div class="text-right date-format">
+                    @DateProcess(item.MessageDate)
+                </div>
+            </div>
+
+        }
+        else
+        {
+            <div class="text-right chat-massage-agent">
+                @item.Message
+                <div class="text-left date-format">
+                    @DateProcess(item.MessageDate)
+                </div>
+            </div>
+        }
+    }
+</div>
+<div class="bg-dark">
+    <div style="padding:11px;">
+        <textarea class="form-control textarea" rows="4" style="background-color:transparent;color:white;"></textarea>
+        <button class="form-control send-whatsapp">Send</button>
+    </div>
+</div>
+@{
+    string DateProcess(DateTime MessageDate)
+    {
+        string date = "";
+        if (DateTime.Today > MessageDate.Date)
+        {
+            date = MessageDate.Day.ToString() + ' ' + MessageDate.ToString("MMMM", System.Globalization.CultureInfo.InvariantCulture) + ' ' + MessageDate.ToShortTimeString();
+        }
+        else
+        {
+            date = MessageDate.ToShortTimeString();
+        }
+        return date;
+    }
+}
+<script>
+    /* Returns Old Messages to Chat */
+    var messageBody = document.querySelector('#chat-messages-container');
+    messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+    var counter = 1;
+    var noResult = false;
+    $('#chat-messages-container').scroll(function () {
+        if ($(this).scrollTop() < 10) {
+            let chatId = @ViewBag.ChatId;
+            let take = @ViewBag.Take;
+            let skip = take * counter;
+            if (noResult != true) {
+                $('#loading').removeClass('invisible');
+                setTimeout(function () {
+                    $.ajax({
+                        url: '/Inbox/SkipTakeMessages?chatId=' + chatId + '&skip=' + skip + '&take=' + take,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.length == 0) {
+                                noResult = true;
+                            }
+
+                            $.each(data, function (index, item) {
+
+                                if (item.messageDirection == true) {
+                                    var htmlData = '<div class="text-left chat-massage-client">';
+                                    htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '</div></div>';
+                                    $('#old-messages').prepend(htmlData);
+                                }
+                                else {
+                                    var htmlData = '<div class="text-right chat-massage-agent">';
+                                    htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '</div></div>';
+                                    $('#old-messages').prepend(htmlData);
+                                }
+                                $('#chat-messages-container').scrollTop(150);
+                            });
+                        },
+                        error: function (response) {
+                            if (response.status == '401') {
+                                window.location.href = '/Account/Login?ReturnUrl=%2FInbox%2FIndex';
+                            }
+                            else {
+                                alert("Error Occurred.(Cbx01)");
+                            }
+                        }
+                    });
+                    counter++;
+                    $('#loading').addClass('invisible');
+
+                }, 150);
+
+            }
+        }
+    })
+    function DateProcess(messageDate) {
+        const date = new Date(messageDate);
+        const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
+        const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date)
+
+        return `${day} ${month} ${year}`;
+    }
+</script>

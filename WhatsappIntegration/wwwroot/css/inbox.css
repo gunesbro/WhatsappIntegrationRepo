@@ -1,0 +1,7 @@
+﻿.chatList-item {
+    cursor: pointer;
+}
+
+.selected {
+    box-shadow: 0 4px 8px 0 rgba(199, 95, 21, 0.8), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}

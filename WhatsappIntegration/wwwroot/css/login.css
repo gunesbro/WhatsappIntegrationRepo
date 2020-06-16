@@ -1,0 +1,37 @@
+﻿.account-background {
+    height: 100vh;
+    background-image: url(https://www.vibutechnix.com/projectms/application/themes/default/common/images/login-background.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.login-form-background {
+    background-color: #272A2C;
+    padding-bottom: 2rem;
+}
+
+.input-background {
+    background-color: #121212;
+    margin-top:5px;
+}
+
+.login-header {
+    background-color: #d06417;
+    font-weight: bold;
+    text-align: center;
+    padding: 2rem;
+}
+.validation-error {
+    font-size: 11px;
+    color: #d06417;
+}
