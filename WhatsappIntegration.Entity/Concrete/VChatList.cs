@@ -9,6 +9,7 @@ namespace WhatsappIntegration.Entity.Concrete
     {
         public int ChatId { get; set; }
         public int ChatMessageId { get; set; }
+        public int CompanyId { get; set; }
         public string PhoneNumber { get; set; }
         public bool SmartReplyState { get; set; }
         public string ChatTypeName { get; set; }

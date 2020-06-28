@@ -12,6 +12,7 @@ namespace WhatsappIntegration.DAL.Abstract
         ICompanyRepository Company { get; }
         IDirectoryRepository Directory { get; }
         ISmartReplyRepository SmartReply { get; }
+        IVChatListRepository VChatList { get; }
         int SaveChanges();
 
     }

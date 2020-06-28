@@ -9,10 +9,15 @@ namespace WhatsappIntegration.Utility
         public const bool ChatMessageFromClient = true;
         public const bool ChatMessageFromUserAgent = false;
 
-        public const bool SmartReplyFullMatch = true;
-        public const bool SmartReplyContains = false;
-
         public const string ChatTypeWhatsapp = "Whatsapp";
         public const string ChatTypeSms = "Sms";
+
+        public const bool SmartReplyFullMatch = true;
+        public const bool SmartReplyContains = false;
+        public const bool SmartReplyActive = true;
+        public const bool SmartReplyInactive = false;
+
+        public const int SmartReplyAgentId = -1;
+
     }
 }

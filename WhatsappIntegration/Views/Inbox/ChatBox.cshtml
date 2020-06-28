@@ -42,6 +42,10 @@
                 @item.Message
                 <div class="text-left date-format">
                     @DateProcess(item.MessageDate)
+                    @if (item.AnsweringUserId == Enums.SmartReplyAgentId)
+                    {
+                        <span> from Smart Reply! </span>
+                    }
                 </div>
             </div>
         }
@@ -49,7 +53,7 @@
 </div>
 <div class="bg-dark">
     <div style="padding:11px;">
-        <textarea id="message-area" class="form-control textarea" rows="4" style="background-color:transparent;color:white;"></textarea>
+        <textarea id="message-area" class="form-control textarea" rows="3" style="background-color:transparent;color:white;"></textarea>
         <button id="send-whatsapp" name="send-whatsapp" class="form-control send-whatsapp">Send</button>
     </div>
 </div>
@@ -126,14 +130,19 @@
                                         var htmlData = '<div class="bg-light" style="height:0.1px;margin-left:80px;margin-right:80px;"></div>';
                                         $('#old-messages').prepend(htmlData);
                                     }
-                                    if (item.messageDirection == true) {
+                                    if (item.messageDirection == @Enums.ChatMessageFromClient.ToString().ToLower()) {
                                         var htmlData = '<div class="text-left chat-massage-client">';
                                         htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '</div></div>';
                                         $('#old-messages').prepend(htmlData);
                                     }
                                     else {
                                         var htmlData = '<div class="text-right chat-massage-agent">';
-                                        htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '</div></div>';
+                                        if (item.AnsweringUserId == @Enums.SmartReplyAgentId) {
+                                            htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '<span> from Smart Reply! </span></div></div>';
+                                        }
+                                        else {
+                                            htmlData += item.message + '<div class="text-right date-format">' + DateProcess(item.messageDate) + '</div></div>';
+                                        }
                                         $('#old-messages').prepend(htmlData);
                                     }
                                     $('#chat-messages-container').scrollTop(150);
@@ -150,13 +159,31 @@
                         });
                         counter++;
                         $('#loading').addClass('invisible');
-
                     }, 100);
 
                 }
             }
          })
 
+        $('#send-whatsapp').click(function () {
+            var message = $('#message-area').val();
+            $.ajax({
+                url: '/Webhooks/SendOutgoingWhatsappMessage?message=' + message + '&chatId=' + chatId,
+                type: 'POST',
+                dataType: 'html',
+                success: function (data) {
+                    $("#chatbox-container").html(data);
+                },
+                error: function (response) {
+                    if (response.status == '401') {
+                        window.location.href = '/Account/Login?ReturnUrl=%2FInbox%2FIndex';
+                    }
+                    else {
+                        alert("Error Occurred.");
+                    }
+                }
+            })
+        })
         $('#message-area').keypress(function (e) {
             var key = e.which;
             if (e.keyCode == 13 && e.shiftKey) //shift + enter for new line
@@ -180,7 +207,7 @@
     }
 
     function handleError(status) {
-        if (status = '1006') {
+        if (status == '1006') {
             window.location.href = '/Account/Login?ReturnUrl=%2FInbox%2FIndex';
         }
         else {

@@ -19,6 +19,7 @@ namespace WhatsappIntegration.DAL.Concrete.EFCore
         private ICompanyRepository _company;
         private IDirectoryRepository _directory;
         private ISmartReplyRepository _smartReply;
+        private IVChatListRepository _vChatList;
         public IChatRepository Chat
         {
             get
@@ -64,7 +65,13 @@ namespace WhatsappIntegration.DAL.Concrete.EFCore
                 return _smartReply ?? (_smartReply = new EfSmartReplyRepository(dbContext));
             }
         }
-
+        public IVChatListRepository VChatList
+        {
+            get
+            {
+                return _vChatList ?? (_vChatList = new EfVChatListRepository(dbContext));
+            }
+        }
         public void Dispose()
         {
             dbContext.Dispose();

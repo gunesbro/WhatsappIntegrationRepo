@@ -33,15 +33,32 @@ $(document).ready(function () {
     });
     $('.form-check-input').click(function () {
         let state = $(this).val();
+        chatId = $(this).attr("chat-id");
         if (state == 'True') {
             $(this).val('False');
             $(this).removeAttr('checked');
-            //Smart Reply State değişecek
         }
         else {
             $(this).val('True');
             $(this).attr('checked', 'checked');
-            //Smart Reply State değişecek
         }
+        state = $(this).val();
+        $.ajax({
+            url: '/Inbox/ChangeSmartReplyState?chatId=' + chatId + '&state=' + state,
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                //$("#chatbox-container").html(data);
+            },
+            error: function (response) {
+                if (response.status == '401') {
+                    window.location.href = '/Account/Login?ReturnUrl=%2FInbox%2FIndex';
+                }
+                else {
+                    alert("Error Occurred. " + response.data);
+                }
+            }
+        })
     })
+   
 });

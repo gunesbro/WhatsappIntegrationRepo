@@ -15,5 +15,8 @@ namespace WhatsappIntegration.Entity.Concrete
         public bool MessageDirection { get; set; } //Client: true / User Agent: false
         public bool IsItRead { get; set; } // Is Message Read from user? If Not notify
         public int? AnsweringUserId { get; set; } // Who answered to client?
+        public string TwilioMessageId { get; set; }
+        public string TwilioMessageStatus { get; set; }
+
     }
 }

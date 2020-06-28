@@ -15,5 +15,6 @@ namespace WhatsappIntegration.Entity.Concrete
         public string ChatTypeName { get; set; }
         public string ChatTypeIdentity { get; set; }
         public int CompanyId { get; set; }
+        public string ChatType { get; set; }
     }
 }

@@ -22,7 +22,7 @@
 
 .chat-messages-container {
     padding: 5px;
-    height: 450px;
+    height: 440px;
     overflow: auto;
     color: white;
 }

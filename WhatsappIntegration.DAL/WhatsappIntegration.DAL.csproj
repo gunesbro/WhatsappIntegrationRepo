@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WhatsappIntegration.Entity\WhatsappIntegration.Entity.csproj" />
+    <ProjectReference Include="..\WhatsappIntegration.Utility\WhatsappIntegration.Utility.csproj" />
  
   </ItemGroup>
 

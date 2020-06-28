@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WhatsappIntegration.DAL.Abstract;
 using WhatsappIntegration.DAL.Concrete.EFCore;
 using WhatsappIntegration.DAL.Context;
 using WhatsappIntegration.Entity.Concrete;
+using WhatsappIntegration.Utility;
 
 namespace WhatsappIntegration.WebUI.Controllers
 {
@@ -16,21 +19,25 @@ namespace WhatsappIntegration.WebUI.Controllers
     {
         IdentityContext context;
         private IUnitOfWork unitOfWork;
-        public InboxController(IUnitOfWork _unitOfWork, IdentityContext _context)
+        private UserManager<UserAgent> userManager;
+        public InboxController(IUnitOfWork _unitOfWork, IdentityContext _context, UserManager<UserAgent> _userManager)
         {
             unitOfWork = _unitOfWork;
             context = _context;
+            userManager = _userManager;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            var result = context.VChatList.ToList();
+            var user = await userManager.GetUserAsync(User);
+            var result = unitOfWork.VChatList.Find(f=>f.CompanyId ==user.CompanyId);
             if (result != null)
             {
-                foreach (var item in result)
-                {
-                    item.UnreadMessageCount = unitOfWork.ChatMessages.GetUnreadMessageCount(item.ChatId);
-                }
-                return View(result);
+                //foreach (var item in result)
+                //{
+                //    item.UnreadMessageCount = unitOfWork.ChatMessages.GetUnreadMessageCount(item.ChatId);
+                //}
+                int pageSize = 2;
+                return View(PaginatedList<VChatList>.Create(result.AsNoTracking(), pageNumber ?? 1, pageSize));
             }
             return View();
         }
@@ -60,6 +67,20 @@ namespace WhatsappIntegration.WebUI.Controllers
                 .ToList();
 
             return Json(chatMessages);
+        }
+
+        [HttpPost]
+        public JsonResult ChangeSmartReplyState(int chatId, bool state)
+        {
+            var chat = unitOfWork.Chat.Find(f => f.ChatId == chatId && f.SmartReplyState != state).FirstOrDefault();
+            if (chat != null)
+            {
+                chat.SmartReplyState = state;
+                unitOfWork.Chat.Update(chat);
+                unitOfWork.SaveChanges();
+                return Json(new { state = "success" });
+            }
+            return Json(NotFound());
         }
     }
 }

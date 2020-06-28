@@ -31,6 +31,7 @@ namespace WhatsappIntegration
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            
             services.AddSignalR();
             services.AddDbContext<IdentityContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("WhatsappIntegration.WebUI")));
